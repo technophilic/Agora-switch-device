@@ -39,7 +39,7 @@ function removeVideoStream (evt) {
 }
 
 function createSwitchUI(client){
-    client.getCameras(x=>x.map( y => devices.innerHTML+=`<option value="${y.deviceId}">${y.label}</option>`));
+    client.getCameras(cameras => cameras.map( (camera,idx) => devices.innerHTML+=`<option value="${camera.deviceId}">${camera.label||("Device "+idx)}</option>`));
     switchContainer.style.visibility='visible';
 }
 
@@ -50,10 +50,11 @@ document.getElementById("start").onclick = function () {
         codec:'h264'
     });
 
-    createSwitchUI(client);
+    
 
     let appid = document.getElementById('app-id').value;
     client.init(appid,function(){
+        createSwitchUI(client);
         client.join(null,'any-channel',null,function(uid){
             //Created a client and joined a channel
             let localStream = AgoraRTC.createStream({
